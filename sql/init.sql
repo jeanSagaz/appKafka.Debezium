@@ -1,0 +1,41 @@
+IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'KafkaDebezium')
+BEGIN
+  CREATE DATABASE KafkaDebezium;
+END;
+GO
+
+USE KafkaDebezium
+GO
+
+IF OBJECT_ID('Customers', 'U') IS NULL
+BEGIN
+
+  CREATE TABLE [dbo].[Customers](
+	[Id] [uniqueidentifier] NOT NULL,
+	[Name] [varchar](100) NOT NULL,
+	[Email] [varchar](100) NOT NULL,
+	[BirthDate] [datetime2](7) NOT NULL,
+ CONSTRAINT [PK_Customers] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+END;
+GO
+
+IF OBJECT_ID('Products', 'U') IS NULL
+BEGIN
+
+  CREATE TABLE [dbo].[Products](
+	[Id] INT IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](100) NOT NULL,	
+	[Active] [bit] NOT NULL,
+ CONSTRAINT [PK_Products] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+END;
+GO

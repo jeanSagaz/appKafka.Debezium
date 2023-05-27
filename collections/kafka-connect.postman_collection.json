@@ -1,0 +1,179 @@
+{
+	"info": {
+		"_postman_id": "aef1fada-0a18-4024-b1c4-7f5256e431e0",
+		"name": "kafka-connect",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "641781"
+	},
+	"item": [
+		{
+			"name": "connector-plugins",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8083/connector-plugins",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connector-plugins"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "connectors",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8083/connectors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connectors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "connectors",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8083/connectors/{{connector-name}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connectors",
+						"{{connector-name}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "connector-configure",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\":\"sqlserver-db-connector\",\r\n   \"config\":{\r\n      \"connector.class\":\"io.debezium.connector.sqlserver.SqlServerConnector\",\r\n      \"database.hostname\":\"192.168.0.235\",\r\n      \"database.port\":\"1434\",\r\n      \"database.user\":\"sa\",\r\n      \"database.password\":\"SqlServer2019!\",\r\n      \"database.dbname\":\"KafkaDebezium\",\r\n      \"database.server.name\":\"dbserver.KafkaDebezium\",\r\n      \"table.whitelist\":\"dbo.Customers\",\r\n      \"database.history.kafka.bootstrap.servers\":\"kafka:9092\",\r\n      \"database.history.kafka.topic\":\"dbhistory.Customers\"\r\n   }\r\n}\r\n ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/connectors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connectors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "connector-configure-latest",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\":\"sqlserver-db-connector\",\r\n   \"config\":{\r\n      \"connector.class\":\"io.debezium.connector.sqlserver.SqlServerConnector\",\r\n      \"database.hostname\":\"192.168.0.235\",\r\n      \"database.port\":\"1434\",\r\n      \"database.user\":\"sa\",\r\n      \"database.password\":\"SqlServer2019!\",\r\n      \"database.names\":\"KafkaDebezium\",\r\n      \"topic.prefix\": \"dbserver.01\",\r\n      \"table.include.list\":\"dbo.Customers\",\r\n      \"schema.history.internal.kafka.bootstrap.servers\":\"kafka:9092\",\r\n      \"schema.history.internal.kafka.topic\":\"schemahistory.Customers\",\r\n      \"database.encrypt\": false\r\n   }\r\n}\r\n ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/connectors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connectors"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
