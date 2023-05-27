@@ -27,7 +27,7 @@ To know more about how to setup your enviroment visit the [Microsoft .NET Downlo
 
 ## Debezium:
 
-- [Debezium configuration SqlServer version 2.3](https://debezium.io/documentation/reference/2.3/index.html)
+- [Debezium configuration SqlServer version 2.3](https://debezium.io/documentation/reference/2.3/index.html)<br/>
 As the documentation recommends.<br/>
 Warning: Do not change the value of this property. If you change the name value, after a restart, instead of continuing to emit events to the original topics, the connector emits subsequent events to topics whose names are based on the new value. The connector is also unable to recover its database schema history topic.
 
