@@ -34,8 +34,8 @@ Warning: Do not change the value of this property. If you change the name value,
 - [Debezium configuration SqlServer version 1.1](https://debezium.io/documentation/reference/1.1/connectors/sqlserver.html)
 
 ## Running the project
-Go to the folder where the file is located `docker-compose.yaml` and at the command prompt run `docker-compose up -d`.
-If you are using the connector `debezium-connector-sqlserver:latest` use the postman collection `connector-configure-latest`.
+Go to the folder where the file is located `docker-compose.yaml` and at the command prompt run `docker-compose up -d`.<br/>
+If you are using the connector `debezium-connector-sqlserver:latest` use the postman collection `connector-configure-latest`.<br/>
 If you are using the connector `debezium-connector-sqlserver:1.1.0` use the postman collection `connector-configure`.
 
 # Documentation for consultation
