@@ -4,7 +4,7 @@ namespace Kafka.Debezium.Models.Key.Identifications
 {
     public class ProductKey
     {
-        [JsonPropertyName("Id")]
-        public int Id { get; set; }
+        [JsonPropertyName("Code")]
+        public int Code { get; set; }
     }
 }

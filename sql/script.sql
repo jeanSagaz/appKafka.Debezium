@@ -13,7 +13,7 @@ GO
 --        [Email] = 'fulano@gmail.com'
 -- WHERE [Id] = '8a1d0b00-a451-49d9-832e-5a47388839bf'
 
--- DELETE FROM [dbo].[Customers] WHERE ID = '8a1d0b00-a451-49d9-832e-5a47388839bf'
+-- DELETE FROM [dbo].[Customers] WHERE [Id] = '8a1d0b00-a451-49d9-832e-5a47388839bf'
 
 INSERT INTO [dbo].[Products]([Name],
 	[Active])
@@ -24,6 +24,6 @@ GO
 -- UPDATE [dbo].[Products]
 --    SET [Name] = 'PS5',
 --        [Active] = 1
--- WHERE [Id] = 1
+-- WHERE [Code] = 1
 
--- DELETE FROM [dbo].[Products] WHERE ID = 1
+-- DELETE FROM [dbo].[Products] WHERE [Code] = 1

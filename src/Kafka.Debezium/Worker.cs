@@ -4,6 +4,7 @@ using Kafka.Debezium.Models.Key;
 using Kafka.Debezium.Models.Key.Identifications;
 using Kafka.Debezium.Models.Value;
 using System.Text.Json;
+using static Confluent.Kafka.ConfigPropertyNames;
 
 namespace Kafka.Debezium
 {
@@ -62,67 +63,11 @@ namespace Kafka.Debezium
                         _logger.LogInformation("Kafka consumer loop started at: {time}", DateTimeOffset.Now);
                         var consumeResult = consumer.Consume(stoppingToken);
                         if (consumeResult.IsPartitionEOF) continue;
-                        
+
                         _logger.LogInformation($"Key: {consumeResult.Message.Key} | Value: {consumeResult.Message.Value}");
 
-                        ModelValue<Customer>? customer = null;
-                        if (consumeResult.Message.Value is not null)
-                            customer = JsonSerializer.Deserialize<ModelValue<Customer>>(consumeResult.Message.Value);
-                        var key = JsonSerializer.Deserialize<ModelKey<CustomerKey>>(consumeResult.Message.Key);
-
-                        //ModelValue<Product>? product = null;
-                        //if (consumeResult.Message.Value is not null)
-                        //    product = JsonSerializer.Deserialize<ModelValue<Product>>(consumeResult.Message.Value);
-                        //var key = JsonSerializer.Deserialize<ModelKey<ProductKey>>(consumeResult.Message.Key);
-                        
-                        var offset = consumeResult.TopicPartitionOffset;
-
-                        switch (customer?.Payload?.Op)
-                        {
-                            case "r":
-                                Console.WriteLine("READ");
-
-                                //AfterProduct(product);
-                                AfterCustomer(customer);
-                                break;
-
-                            case "c":
-                                Console.WriteLine("INSERT");
-
-                                //AfterProduct(product);
-                                AfterCustomer(customer);
-                                break;
-
-                            case "u":
-                                Console.WriteLine("UPDATE");
-
-                                //BeforeProduct(product);
-                                //Console.Write("\n");
-                                //AfterProduct(product);
-
-                                BeforeCustomer(customer);
-                                Console.Write("\n");
-                                AfterCustomer(customer);
-                                break;
-
-                            case "d":
-                                Console.WriteLine("DELETE");
-
-                                //BeforeProduct(product);
-                                BeforeCustomer(customer);
-                                break;
-
-                            default:
-                                Console.WriteLine("DEFAULT");
-
-                                if (customer is null)
-                                //if (product is null)
-                                {
-                                    Console.WriteLine($"REMOVED - {key?.Payload?.Id}");
-                                }
-
-                                break;
-                        }
+                        //HandleCustomer(consumer, consumeResult);
+                        HandleProduct(consumer, consumeResult);
 
                         _logger.LogInformation("Consumer worker finished at: {time}", DateTimeOffset.Now);
                         Commit(consumer, consumeResult);
@@ -132,12 +77,12 @@ namespace Kafka.Debezium
                         _logger.LogError(oce, $"Consume canceled: {oce.Message}");
                         continue;
                     }
-                    catch (ConsumeException ex)
+                    catch (ConsumeException ce)
                     {
                         // Consumer errors should generally be ignored (or logged) unless fatal.
-                        _logger.LogError(ex, $"Consume error: {ex.Error.Reason}");
+                        _logger.LogError(ce, $"Consume error: {ce.Error.Reason}");
 
-                        if (ex.Error.IsFatal)
+                        if (ce.Error.IsFatal)
                         {
                             // https://github.com/edenhill/librdkafka/blob/master/INTRODUCTION.md#fatal-consumer-errors
                             break;
@@ -154,6 +99,12 @@ namespace Kafka.Debezium
             await Task.CompletedTask;
         }
 
+        private void Commit(IConsumer<string, string> consumer, ConsumeResult<string, string> consumeResult)
+        {
+            consumer.Commit(consumeResult);
+            consumer.StoreOffset(consumeResult.TopicPartitionOffset);
+        }
+
         private void AfterCustomer(ModelValue<Customer> message)
         {
             Console.WriteLine("Customer");
@@ -168,6 +119,55 @@ namespace Kafka.Debezium
             Console.WriteLine($"Before - Id: {message?.Payload?.Before?.Id}\nNome:{message?.Payload?.Before?.Name}\nE-mail:{message?.Payload?.Before?.Email}");
         }
 
+        private void HandleCustomer(IConsumer<string, string> consumer, ConsumeResult<string, string> consumeResult)
+        {
+            ModelValue<Customer>? message = null;
+            if (consumeResult.Message.Value is not null)
+                message = JsonSerializer.Deserialize<ModelValue<Customer>>(consumeResult.Message.Value);
+            var key = JsonSerializer.Deserialize<ModelKey<CustomerKey>>(consumeResult.Message.Key);
+
+            var offset = consumeResult.TopicPartitionOffset;
+
+            switch (message?.Payload?.Op)
+            {
+                case "r":
+                    Console.WriteLine("READ");
+
+                    AfterCustomer(message);
+                    break;
+
+                case "c":
+                    Console.WriteLine("INSERT");
+
+                    AfterCustomer(message);
+                    break;
+
+                case "u":
+                    Console.WriteLine("UPDATE");
+
+                    BeforeCustomer(message);
+                    Console.Write("\n");
+                    AfterCustomer(message);
+                    break;
+
+                case "d":
+                    Console.WriteLine("DELETE");
+
+                    BeforeCustomer(message);
+                    break;
+
+                default:
+                    Console.WriteLine("DEFAULT");
+
+                    if (message is null)
+                    {
+                        Console.WriteLine($"REMOVED - {key?.Payload?.Id}");
+                    }
+
+                    break;
+            }
+        }
+
         private void AfterProduct(ModelValue<Product> message)
         {
             Console.WriteLine("Product");
@@ -180,10 +180,53 @@ namespace Kafka.Debezium
             Console.WriteLine($"Before - Id: {message?.Payload?.Before?.Id}\nNome:{message?.Payload?.Before?.Name}\nAtivo:{message?.Payload?.Before?.Active}");
         }
 
-        private void Commit(IConsumer<string, string> consumer, ConsumeResult<string, string> consumeResult)
+        private void HandleProduct(IConsumer<string, string> consumer, ConsumeResult<string, string> consumeResult)
         {
-            consumer.Commit(consumeResult);
-            consumer.StoreOffset(consumeResult.TopicPartitionOffset);
-        }
+            ModelValue<Product>? message = null;
+            if (consumeResult.Message.Value is not null)
+                message = JsonSerializer.Deserialize<ModelValue<Product>>(consumeResult.Message.Value);
+            var key = JsonSerializer.Deserialize<ModelKey<ProductKey>>(consumeResult.Message.Key);
+
+            var offset = consumeResult.TopicPartitionOffset;
+
+            switch (message?.Payload?.Op)
+            {
+                case "r":
+                    Console.WriteLine("READ");
+
+                    AfterProduct(message);
+                    break;
+
+                case "c":
+                    Console.WriteLine("INSERT");
+
+                    AfterProduct(message);
+                    break;
+
+                case "u":
+                    Console.WriteLine("UPDATE");
+
+                    BeforeProduct(message);
+                    Console.Write("\n");
+                    AfterProduct(message);
+                    break;
+
+                case "d":
+                    Console.WriteLine("DELETE");
+
+                    BeforeProduct(message);
+                    break;
+
+                default:
+                    Console.WriteLine("DEFAULT");
+
+                    if (message is null)
+                    {
+                        Console.WriteLine($"REMOVED - {key?.Payload?.Code}");
+                    }
+
+                    break;
+            }
+        }        
     }
 }
