@@ -65,8 +65,8 @@ namespace Kafka.Debezium
 
                         _logger.LogInformation($"Key: {consumeResult.Message.Key} | Value: {consumeResult.Message.Value}");
 
-                        //HandleCustomer(consumer, consumeResult);
-                        HandleProduct(consumer, consumeResult);
+                        //HandleCustomer(consumeResult);
+                        HandleProduct(consumeResult);
 
                         _logger.LogInformation("Consumer worker finished at: {time}", DateTimeOffset.Now);
                         Commit(consumer, consumeResult);
@@ -118,7 +118,7 @@ namespace Kafka.Debezium
             Console.WriteLine($"Before - Id: {message?.Payload?.Before?.Id}\nNome:{message?.Payload?.Before?.Name}\nE-mail:{message?.Payload?.Before?.Email}");
         }
 
-        private void HandleCustomer(IConsumer<string, string> consumer, ConsumeResult<string, string> consumeResult)
+        private void HandleCustomer(ConsumeResult<string, string> consumeResult)
         {
             ModelValue<Customer>? message = null;
             if (consumeResult.Message.Value is not null)
@@ -179,7 +179,7 @@ namespace Kafka.Debezium
             Console.WriteLine($"Before - Id: {message?.Payload?.Before?.Id}\nNome:{message?.Payload?.Before?.Name}\nAtivo:{message?.Payload?.Before?.Active}");
         }
 
-        private void HandleProduct(IConsumer<string, string> consumer, ConsumeResult<string, string> consumeResult)
+        private void HandleProduct(ConsumeResult<string, string> consumeResult)
         {
             ModelValue<Product>? message = null;
             if (consumeResult.Message.Value is not null)
