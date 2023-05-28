@@ -4,7 +4,6 @@ using Kafka.Debezium.Models.Key;
 using Kafka.Debezium.Models.Key.Identifications;
 using Kafka.Debezium.Models.Value;
 using System.Text.Json;
-using static Confluent.Kafka.ConfigPropertyNames;
 
 namespace Kafka.Debezium
 {
