@@ -2,10 +2,10 @@
 
 namespace Kafka.Debezium.Models.Key
 {
-    public class ModelKey
+    public class ModelKey<KeyEntity>
     {
         [JsonPropertyName("payload")]
-        public Identification? Payload { get; set; }
+        public KeyEntity? Payload { get; set; }
 
         [JsonPropertyName("schema")]
         public SchemaPrimary? Schema { get; set; }

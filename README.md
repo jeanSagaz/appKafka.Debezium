@@ -36,7 +36,8 @@ Warning: Do not change the value of this property. If you change the name value,
 ## Running the project
 Go to the folder where the file is located `docker-compose.yaml` and at the command prompt run `docker-compose up -d`.<br/>
 If you are using the connector `debezium-connector-sqlserver:latest` use the postman collection `connector-configure-latest`.<br/>
-If you are using the connector `debezium-connector-sqlserver:1.1.0` use the postman collection `connector-configure`.
+If you are using the connector `debezium-connector-sqlserver:1.1.0` use the postman collection `connector-configure`.<br/>
+Execute the [script](sql/debezium.sql) to enabled and create the events of CDC.
 
 # Documentation for consultation
 * [Debezium](https://debezium.io/)

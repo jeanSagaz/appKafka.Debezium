@@ -137,6 +137,45 @@
 			"response": []
 		},
 		{
+			"name": "connector-configure-products",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\":\"sqlserver-db-connector\",\r\n   \"config\":{\r\n      \"connector.class\":\"io.debezium.connector.sqlserver.SqlServerConnector\",\r\n      \"database.hostname\":\"192.168.0.235\",\r\n      \"database.port\":\"1434\",\r\n      \"database.user\":\"sa\",\r\n      \"database.password\":\"SqlServer2019!\",\r\n      \"database.dbname\":\"KafkaDebezium\",\r\n      \"database.server.name\":\"dbserver.KafkaDebezium\",\r\n      \"table.whitelist\":\"dbo.Products\",\r\n      \"database.history.kafka.bootstrap.servers\":\"kafka:9092\",\r\n      \"database.history.kafka.topic\":\"dbhistory.Products\"\r\n   }\r\n}\r\n ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/connectors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connectors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "connector-configure-latest",
 			"request": {
 				"method": "POST",
@@ -154,7 +193,46 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n   \"name\":\"sqlserver-db-connector\",\r\n   \"config\":{\r\n      \"connector.class\":\"io.debezium.connector.sqlserver.SqlServerConnector\",\r\n      \"database.hostname\":\"192.168.0.235\",\r\n      \"database.port\":\"1434\",\r\n      \"database.user\":\"sa\",\r\n      \"database.password\":\"SqlServer2019!\",\r\n      \"database.names\":\"KafkaDebezium\",\r\n      \"topic.prefix\": \"dbserver.01\",\r\n      \"table.include.list\":\"dbo.Customers\",\r\n      \"schema.history.internal.kafka.bootstrap.servers\":\"kafka:9092\",\r\n      \"schema.history.internal.kafka.topic\":\"schemahistory.Customers\",\r\n      \"database.encrypt\": false\r\n   }\r\n}\r\n ",
+					"raw": "{\r\n   \"name\":\"sqlserver-db-connector\",\r\n   \"config\":\r\n   {\r\n      \"connector.class\":\"io.debezium.connector.sqlserver.SqlServerConnector\",\r\n      \"database.hostname\":\"192.168.0.235\",\r\n      \"database.port\":\"1434\",\r\n      \"database.user\":\"sa\",\r\n      \"database.password\":\"SqlServer2019!\",\r\n      \"database.names\":\"KafkaDebezium\",\r\n      \"topic.prefix\": \"dbserver\",\r\n      \"table.include.list\":\"dbo.Customers\",\r\n      \"schema.history.internal.kafka.bootstrap.servers\":\"kafka:9092\",\r\n      \"schema.history.internal.kafka.topic\":\"schemahistory.Customers\",\r\n      \"database.encrypt\": false\r\n   }\r\n}\r\n ",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8083/connectors",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"connectors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "connector-configure-latest-products",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"name\":\"sqlserver-db-connector-products\",\r\n   \"config\": \r\n   {\r\n      \"connector.class\":\"io.debezium.connector.sqlserver.SqlServerConnector\",\r\n      \"database.hostname\":\"192.168.0.235\",\r\n      \"database.port\":\"1434\",\r\n      \"database.user\":\"sa\",\r\n      \"database.password\":\"SqlServer2019!\",\r\n      \"database.names\":\"KafkaDebezium\",\r\n      \"topic.prefix\": \"dbserver\",\r\n      \"table.include.list\":\"dbo.Products\",\r\n      \"schema.history.internal.kafka.bootstrap.servers\":\"kafka:9092\",\r\n      \"schema.history.internal.kafka.topic\":\"schemahistory.Products\",\r\n      \"database.encrypt\": false\r\n   }\r\n}\r\n ",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -1,6 +1,7 @@
 using Confluent.Kafka;
 using Kafka.Debezium.Models.Entities;
 using Kafka.Debezium.Models.Key;
+using Kafka.Debezium.Models.Key.Identifications;
 using Kafka.Debezium.Models.Value;
 using System.Text.Json;
 
@@ -53,7 +54,6 @@ namespace Kafka.Debezium
                 .Build())
             {
                 consumer.Subscribe(_topic);
-                //consumer.Subscribe("dbserver.KafkaDebezium.dbo.Products");
 
                 while (!stoppingToken.IsCancellationRequested)
                 {
@@ -68,59 +68,57 @@ namespace Kafka.Debezium
                         ModelValue<Customer>? customer = null;
                         if (consumeResult.Message.Value is not null)
                             customer = JsonSerializer.Deserialize<ModelValue<Customer>>(consumeResult.Message.Value);
+                        var key = JsonSerializer.Deserialize<ModelKey<CustomerKey>>(consumeResult.Message.Key);
 
-                        ModelValue<Product>? product = null;
+                        //ModelValue<Product>? product = null;
                         //if (consumeResult.Message.Value is not null)
                         //    product = JsonSerializer.Deserialize<ModelValue<Product>>(consumeResult.Message.Value);
-
-                        var key = JsonSerializer.Deserialize<ModelKey>(consumeResult.Message.Key);
+                        //var key = JsonSerializer.Deserialize<ModelKey<ProductKey>>(consumeResult.Message.Key);
+                        
                         var offset = consumeResult.TopicPartitionOffset;
 
                         switch (customer?.Payload?.Op)
                         {
-                            case "c":
-                                Console.WriteLine($"INSERT");
+                            case "r":
+                                Console.WriteLine("READ");
 
-                                AfterProduct(product);
+                                //AfterProduct(product);
+                                AfterCustomer(customer);
+                                break;
+
+                            case "c":
+                                Console.WriteLine("INSERT");
+
+                                //AfterProduct(product);
+                                AfterCustomer(customer);
+                                break;
+
+                            case "u":
+                                Console.WriteLine("UPDATE");
+
+                                //BeforeProduct(product);
+                                //Console.Write("\n");
+                                //AfterProduct(product);
+
+                                BeforeCustomer(customer);
                                 Console.Write("\n");
                                 AfterCustomer(customer);
                                 break;
 
                             case "d":
-                                Console.WriteLine($"DELETE");
+                                Console.WriteLine("DELETE");
 
-                                BeforeProduct(product);
-                                Console.Write("\n");
+                                //BeforeProduct(product);
                                 BeforeCustomer(customer);
-                                break;
-
-                            case "u":
-                                Console.WriteLine($"UPDATE");
-
-                                BeforeProduct(product);
-                                Console.Write("\n");
-                                AfterProduct(product);
-
-                                Console.Write("\n");
-                                BeforeCustomer(customer);
-                                Console.Write("\n");
-                                AfterCustomer(customer);
-                                break;
-
-                            case "r":
-                                Console.WriteLine($"READ");
-
-                                AfterProduct(product);
-                                Console.Write("\n");
-                                AfterCustomer(customer);
                                 break;
 
                             default:
-                                Console.WriteLine($"DEFAULT");
+                                Console.WriteLine("DEFAULT");
 
                                 if (customer is null)
+                                //if (product is null)
                                 {
-                                    Console.WriteLine($"DELETADO - {key?.Payload?.Id}");
+                                    Console.WriteLine($"REMOVED - {key?.Payload?.Id}");
                                 }
 
                                 break;
@@ -134,12 +132,12 @@ namespace Kafka.Debezium
                         _logger.LogError(oce, $"Consume canceled: {oce.Message}");
                         continue;
                     }
-                    catch (ConsumeException e)
+                    catch (ConsumeException ex)
                     {
                         // Consumer errors should generally be ignored (or logged) unless fatal.
-                        _logger.LogError(e, $"Consume error: {e.Error.Reason}");
+                        _logger.LogError(ex, $"Consume error: {ex.Error.Reason}");
 
-                        if (e.Error.IsFatal)
+                        if (ex.Error.IsFatal)
                         {
                             // https://github.com/edenhill/librdkafka/blob/master/INTRODUCTION.md#fatal-consumer-errors
                             break;
